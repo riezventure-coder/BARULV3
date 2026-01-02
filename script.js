@@ -1,23 +1,33 @@
 const indexData = new Map();
 
-fetch("./data.json")
+fetch("/data.json")
   .then(res => res.json())
   .then(data => {
+    console.log("DATA LOADED:", data);
+
     data.forEach(item => {
-      const key = `${item.ip}|${item.slot}|${item.port}`;
+      const key =
+        String(item.ip).trim() + "|" +
+        String(item.slot).trim() + "|" +
+        String(item.port).trim();
+
       indexData.set(key, item);
     });
-    console.log("Index siap:", indexData.size, "data");
+
+    console.log("INDEX SIAP:", indexData.size);
   })
-  .catch(err => console.error("Gagal load data", err));
+  .catch(err => console.error("FETCH ERROR:", err));
 
 function cari() {
-  const ip = ipEl.value.trim();
-  const slot = slotEl.value.trim();
-  const port = portEl.value.trim();
+  const ip = document.getElementById("ip").value.trim();
+  const slot = document.getElementById("slot").value.trim();
+  const port = document.getElementById("port").value.trim();
 
-  const key = `${ip}|${slot}|${port}`;
+  const key = ip + "|" + slot + "|" + port;
+  console.log("CARI:", key);
+
   const hasil = indexData.get(key);
+  const hasilEl = document.getElementById("hasil");
 
   if (hasil) {
     hasilEl.innerHTML = `
@@ -28,9 +38,3 @@ function cari() {
     hasilEl.innerHTML = `<span style="color:red">Data tidak ditemukan</span>`;
   }
 }
-
-// cache DOM (lebih cepat)
-const ipEl = document.getElementById("ip");
-const slotEl = document.getElementById("slot");
-const portEl = document.getElementById("port");
-const hasilEl = document.getElementById("hasil");
